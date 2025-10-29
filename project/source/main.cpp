@@ -55,6 +55,10 @@ int main(){
     }
 
     glViewport(0, 0, mode->width, mode->height);
+    glEnable(GL_BLEND);
+
+    //this enables alpha values in png inages and color data
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //when errors here - throws shader errors : does not terminate
     auto shader = Renderer::Shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
@@ -65,7 +69,7 @@ int main(){
     Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
 
     //errors here - shows black : does not terminate
-    Renderer::Texture texture{"./assets/dog.jpeg"};
+    Renderer::Texture texture{"./assets/dog.png"};
 
     while(!glfwWindowShouldClose(window))
     {

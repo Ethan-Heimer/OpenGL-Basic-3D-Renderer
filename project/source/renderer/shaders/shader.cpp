@@ -46,14 +46,10 @@ void Shader::Delete(){
     deleted = true;
 }
 
-
-
 void Shader::CompileShaderSource
     (const std::string& source, ShaderID* id, unsigned int shaderType){
     *id = glCreateShader(shaderType);
     const char* csource = source.c_str();
-
-    std::cout << csource << std::endl;
 
     glShaderSource(*id, 1, &csource, NULL);
     glCompileShader(*id);

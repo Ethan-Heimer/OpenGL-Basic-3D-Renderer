@@ -28,8 +28,19 @@ Texture::Texture(std::string imagePath){
     // load and generate the texture
     int width, height, nrChannels;
     unsigned char *data = stbi_load(imagePath.c_str(), &width, &height, &nrChannels, 0);
+
+    unsigned int channelType = GL_RGB;
+    if(nrChannels == 4){
+        channelType = GL_RGBA;
+    }
+
     if (data){
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+        //the first channeltype arg represents how many color channels are in 
+        //the texture
+        
+        //the second chenneltype arg represents the format of the channel data,
+        //ex (RGBA VS BRGA)
+        glTexImage2D(GL_TEXTURE_2D, 0, channelType, width, height, 0, channelType,
         GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
