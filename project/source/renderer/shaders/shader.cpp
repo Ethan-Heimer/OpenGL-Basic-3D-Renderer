@@ -27,11 +27,26 @@ Shader::Shader(string vertexPath, string fragmentPath){
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+}
+
+Shader::~Shader(){
+    Delete();
 }
 
 void Shader::Use(){
     glUseProgram(shader);
 }
+
+void Shader::Delete(){
+     if(deleted)
+         return;
+
+    glDeleteProgram(shader);
+    deleted = true;
+}
+
+
 
 void Shader::CompileShaderSource
     (const std::string& source, ShaderID* id, unsigned int shaderType){

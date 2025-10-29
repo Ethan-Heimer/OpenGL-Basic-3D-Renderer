@@ -63,11 +63,13 @@ Mesh::Mesh
 }
 
 Mesh::~Mesh(){
-    if(!deleted)
-        Delete();
+    Delete();
 }
 
 void Mesh::Delete(){
+    if(deleted)
+        return;
+
     deleted = true;
 
     glDeleteBuffers(1, &VBO);

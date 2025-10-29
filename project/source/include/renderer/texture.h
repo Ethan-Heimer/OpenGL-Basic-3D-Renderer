@@ -11,8 +11,11 @@ namespace Renderer{
             ~Texture();
 
             void Use();
+            void Delete();
+
         private:
             TextureID texture;
+            bool deleted = false;
     };
 }
 

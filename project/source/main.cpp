@@ -11,12 +11,11 @@ float vertices[] = {
     0.0f, 0.5f, 0.0f, // top right
     0.5f, -0.5f, 0.0f, // bottom right
     -0.5f, -0.5f, 0.0f, // bottom left
-                      //
 };
 
 float uv[] = {
     0.0f, 0.0f,
-    1.0f, 0.0f,
+    0.5f, 0.0f,
     0.5f, 1.0f
 };
 
@@ -29,6 +28,7 @@ void processInput(GLFWwindow *window)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
+
 
 int main(){
     glfwInit();
@@ -56,12 +56,15 @@ int main(){
 
     glViewport(0, 0, mode->width, mode->height);
 
+    //when errors here - throws shader errors : does not terminate
     auto shader = Renderer::Shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
 
     //wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
+
+    //errors here - shows black : does not terminate
     Renderer::Texture texture{"./assets/dog.jpeg"};
 
     while(!glfwWindowShouldClose(window))
@@ -83,7 +86,9 @@ int main(){
         glfwPollEvents();
     }
 
+    shader.Delete();
     mesh.Delete();
+    texture.Delete();
 
     glfwTerminate();
 }

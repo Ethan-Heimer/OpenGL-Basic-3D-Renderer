@@ -43,6 +43,14 @@ void Texture::Use(){
     glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-Texture::~Texture(){
+void Texture::Delete(){
+    if(deleted)
+        return;
 
+    glDeleteTextures(1, &texture);
+    deleted = true;
+}
+
+Texture::~Texture(){
+   Delete(); 
 }
