@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "renderer/texture.h"
 #include "glad/glad.h"
 #include "Image/stb_image.h"
@@ -6,7 +7,7 @@
 
 using namespace Renderer;
 
-Texture::Texture(){
+Texture::Texture(std::string imagePath){
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -26,7 +27,7 @@ Texture::Texture(){
 
     // load and generate the texture
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(imagePath.c_str(), &width, &height, &nrChannels, 0);
     if (data){
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
         GL_UNSIGNED_BYTE, data);
@@ -36,6 +37,10 @@ Texture::Texture(){
     }
 
     stbi_image_free(data);
+}
+
+void Texture::Use(){
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 Texture::~Texture(){

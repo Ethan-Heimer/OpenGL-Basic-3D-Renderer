@@ -1,6 +1,7 @@
 #include "glad/glad.h"
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
+#include "renderer/texture.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -12,6 +13,13 @@ float vertices[] = {
     -0.5f, -0.5f, 0.0f, // bottom left
                       //
 };
+
+float uv[] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.5f, 1.0f
+};
+
 unsigned int indices[] = { // note that we start from 0!
     0, 1, 2, // first triangle
 };
@@ -53,7 +61,8 @@ int main(){
     //wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
-    Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices)};
+    Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
+    Renderer::Texture texture{"./assets/dog.jpeg"};
 
     while(!glfwWindowShouldClose(window))
     {
@@ -65,6 +74,7 @@ int main(){
         //rendering commands
         shader.Use();
         mesh.Use();
+        texture.Use();
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

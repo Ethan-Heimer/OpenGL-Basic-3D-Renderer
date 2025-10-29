@@ -1,13 +1,16 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <string>
+
 namespace Renderer{
     using TextureID = unsigned int;
     class Texture{
         public:
-            Texture();
+            Texture(std::string imagePath);
             ~Texture();
 
+            void Use();
         private:
             TextureID texture;
     };
