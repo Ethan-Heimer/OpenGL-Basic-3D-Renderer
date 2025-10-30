@@ -1,4 +1,7 @@
 #include "glad/glad.h"
+#include "glm/ext/quaternion_transform.hpp"
+#include "glm/fwd.hpp"
+#include "glm/trigonometric.hpp"
 #include "renderer/material.h"
 #include "renderer/mesh.h"
 #include "renderer/object.h"
@@ -12,19 +15,47 @@
 
 //mesh Data
 float vertices[] = {
-    0.0f, 0.5f, 0.0f, // top right
-    0.5f, -0.5f, 0.0f, // bottom right
-    -0.5f, -0.5f, 0.0f, // bottom left
+    0.5f, 0.5f, -0.5f, // top right
+    0.5f, -0.5f, -0.5f, // bottom right
+    -0.5f, -0.5f, -0.5f, // bottom left
+    -0.5, 0.5f, -0.5f,
+
+    0.5f, 0.5f, 0.5f, // top right
+    0.5f, -0.5f, 0.5f, // bottom right
+    -0.5f, -0.5f, 0.5f, // bottom left
+    -0.5, 0.5f, 0.5f,
 };
 
 float uv[] = {
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
     0.0f, 0.0f,
-    0.5f, 0.0f,
-    0.5f, 1.0f
+
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
 };
 
 unsigned int indices[] = { // note that we start from 0!
     0, 1, 2, // first triangle
+    2, 3, 0, //first face
+            
+    4, 5, 6,
+    6, 7, 4,
+
+    0, 1, 4,
+    1, 4, 5,
+
+    1, 2, 5,
+    5, 6, 2,
+
+    7, 3, 4,
+    0, 4, 3,
+
+    2, 3, 6,
+    3, 7, 6
 };
 
 void processInput(GLFWwindow *window)
@@ -60,6 +91,7 @@ int main(){
 
     glViewport(0, 0, mode->width, mode->height);
     glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
 
     //this enables alpha values in png inages and color data
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -72,17 +104,24 @@ int main(){
     //when errors here - throws shader errors : does not terminate
     Renderer::Shader shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
     Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
-    Renderer::Texture texture{"./assets/dog.png"};
+    Renderer::Texture texture{"./assets/dog.jpeg"};
 
     Renderer::Material material{&texture, &shader};
     Renderer::Transform transform{};
 
     Renderer::Object object{&transform, &mesh, &material};
+    
+    //camera
+    glm::mat4 view = glm::mat4{1.f};
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
 
     while(!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         processInput(window);
 
@@ -90,9 +129,13 @@ int main(){
         mesh.Use();
         material.Use();
 
-        shader.SetUniformMatrix("transform", object.GetTransform()->GetTransformationMatrix());
+        object.GetTransform()->SetRotation(0.1f, 0.2f, 0.1f);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        shader.SetUniformMatrix("transform", object.GetTransform()->GetTransformationMatrix());
+        shader.SetUniformMatrix("view", view);
+        shader.SetUniformMatrix("projection", projection);
+
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);
