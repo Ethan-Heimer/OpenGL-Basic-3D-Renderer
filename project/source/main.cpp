@@ -1,4 +1,5 @@
 #include "glad/glad.h"
+#include "renderer/material.h"
 #include "renderer/mesh.h"
 #include "renderer/shader.h"
 #include "renderer/texture.h"
@@ -7,6 +8,7 @@
 #include <iostream>
 #include <string>
 
+//mesh Data
 float vertices[] = {
     0.0f, 0.5f, 0.0f, // top right
     0.5f, -0.5f, 0.0f, // bottom right
@@ -60,16 +62,17 @@ int main(){
     //this enables alpha values in png inages and color data
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    //when errors here - throws shader errors : does not terminate
-    auto shader = Renderer::Shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
 
     //wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
     Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
 
+    //when errors here - throws shader errors : does not terminate
+    auto shader = Renderer::Shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
     //errors here - shows black : does not terminate
     Renderer::Texture texture{"./assets/dog.png"};
+    Renderer::Material material{&texture, &shader};
 
     while(!glfwWindowShouldClose(window))
     {
@@ -79,9 +82,8 @@ int main(){
         processInput(window);
 
         //rendering commands
-        shader.Use();
         mesh.Use();
-        texture.Use();
+        material.Use();
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
