@@ -1,8 +1,10 @@
 #include "glad/glad.h"
 #include "renderer/material.h"
 #include "renderer/mesh.h"
+#include "renderer/object.h"
 #include "renderer/shader.h"
 #include "renderer/texture.h"
+#include "renderer/transform.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -66,20 +68,16 @@ int main(){
     //wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
-    Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
 
     //when errors here - throws shader errors : does not terminate
-    auto shader = Renderer::Shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
-    //errors here - shows black : does not terminate
+    Renderer::Shader shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
+    Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
     Renderer::Texture texture{"./assets/dog.png"};
+
     Renderer::Material material{&texture, &shader};
+    Renderer::Transform transform{};
 
-    //temp transformation data
-    glm::mat4 trans = glm::mat4(1.0f);
-
-    trans = glm::translate(trans, glm::vec3(.5f, .5f, 0.0f));
-    trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(1.5, 1.5, 1.5));
+    Renderer::Object object{&transform, &mesh, &material};
 
     while(!glfwWindowShouldClose(window))
     {
@@ -92,7 +90,7 @@ int main(){
         mesh.Use();
         material.Use();
 
-        shader.SetUniformMatrix("transform", trans);
+        shader.SetUniformMatrix("transform", object.GetTransform()->GetTransformationMatrix());
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
