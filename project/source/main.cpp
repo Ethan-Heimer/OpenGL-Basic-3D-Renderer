@@ -74,6 +74,13 @@ int main(){
     Renderer::Texture texture{"./assets/dog.png"};
     Renderer::Material material{&texture, &shader};
 
+    //temp transformation data
+    glm::mat4 trans = glm::mat4(1.0f);
+
+    trans = glm::translate(trans, glm::vec3(.5f, .5f, 0.0f));
+    trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, glm::vec3(1.5, 1.5, 1.5));
+
     while(!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -84,6 +91,8 @@ int main(){
         //rendering commands
         mesh.Use();
         material.Use();
+
+        shader.SetUniformMatrix("transform", trans);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

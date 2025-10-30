@@ -1,6 +1,10 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
 using ShaderID = unsigned int;
 using ProgramID = unsigned int;
@@ -13,6 +17,8 @@ namespace Renderer{
 
             void Use();
             void Delete();
+
+            void SetUniformMatrix(std::string name, glm::mat4 matrix);
 
         private:
             ShaderID fragmentShader;

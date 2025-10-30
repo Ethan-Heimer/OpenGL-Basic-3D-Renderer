@@ -1,5 +1,6 @@
 #include "renderer/shader.h"
 
+#include "glm/gtc/type_ptr.hpp"
 #include "utils/color.h"
 #include "utils/error.h"
 #include "utils/file.h"
@@ -44,6 +45,11 @@ void Shader::Delete(){
 
     glDeleteProgram(shader);
     deleted = true;
+}
+
+void Shader::SetUniformMatrix(std::string name, glm::mat4 matrix){
+   unsigned int uniformLocation = glGetUniformLocation(shader, name.c_str()); 
+   glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::CompileShaderSource
