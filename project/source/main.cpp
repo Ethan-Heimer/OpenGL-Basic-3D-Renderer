@@ -15,47 +15,91 @@
 
 //mesh Data
 float vertices[] = {
-    0.5f, 0.5f, -0.5f, // top right
-    0.5f, -0.5f, -0.5f, // bottom right
-    -0.5f, -0.5f, -0.5f, // bottom left
-    -0.5, 0.5f, -0.5f,
+-0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, -0.5f,
+0.5f, 0.5f, -0.5f,
+0.5f, 0.5f, -0.5f,
+-0.5f, 0.5f, -0.5f,
+-0.5f, -0.5f, -0.5f,
 
-    0.5f, 0.5f, 0.5f, // top right
-    0.5f, -0.5f, 0.5f, // bottom right
-    -0.5f, -0.5f, 0.5f, // bottom left
-    -0.5, 0.5f, 0.5f,
+-0.5f, -0.5f, 0.5f,
+0.5f, -0.5f, 0.5f,
+0.5f, 0.5f, 0.5f,
+0.5f, 0.5f, 0.5f,
+-0.5f, 0.5f, 0.5f,
+-0.5f, -0.5f, 0.5f,
+
+-0.5f, 0.5f, 0.5f,
+-0.5f, 0.5f, -0.5f,
+-0.5f, -0.5f, -0.5f,
+-0.5f, -0.5f, -0.5f,
+-0.5f, -0.5f, 0.5f,
+-0.5f, 0.5f, 0.5f,
+
+0.5f, 0.5f, 0.5f,
+0.5f, 0.5f, -0.5f,
+0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, 0.5f,
+0.5f, 0.5f, 0.5f,
+
+-0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, -0.5f,
+0.5f, -0.5f, 0.5f,
+0.5f, -0.5f, 0.5f,
+-0.5f, -0.5f, 0.5f,
+-0.5f, -0.5f, -0.5f,
+
+-0.5f, 0.5f, -0.5f,
+0.5f, 0.5f, -0.5f,
+0.5f, 0.5f, 0.5f,
+0.5f, 0.5f, 0.5f,
+-0.5f, 0.5f, 0.5f,
+-0.5f, 0.5f, -0.5f
 };
 
 float uv[] = {
+    0.0f, 0.0f,
     1.0f, 0.0f,
+    1.0f, 1.0f,
     1.0f, 1.0f,
     0.0f, 1.0f,
     0.0f, 0.0f,
 
+    0.0f, 0.0f,
     1.0f, 0.0f,
+    1.0f, 1.0f,
     1.0f, 1.0f,
     0.0f, 1.0f,
     0.0f, 0.0f,
-};
+    
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
 
-unsigned int indices[] = { // note that we start from 0!
-    0, 1, 2, // first triangle
-    2, 3, 0, //first face
-            
-    4, 5, 6,
-    6, 7, 4,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
 
-    0, 1, 4,
-    1, 4, 5,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
 
-    1, 2, 5,
-    5, 6, 2,
-
-    7, 3, 4,
-    0, 4, 3,
-
-    2, 3, 6,
-    3, 7, 6
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
 };
 
 void processInput(GLFWwindow *window)
@@ -103,7 +147,7 @@ int main(){
 
     //when errors here - throws shader errors : does not terminate
     Renderer::Shader shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
-    Renderer::Mesh mesh{vertices, sizeof(vertices), indices, sizeof(indices), uv, sizeof(uv)};
+    Renderer::Mesh mesh{vertices, sizeof(vertices), uv, sizeof(uv)};
     Renderer::Texture texture{"./assets/dog.jpeg"};
 
     Renderer::Material material{&texture, &shader};
@@ -135,7 +179,11 @@ int main(){
         shader.SetUniformMatrix("view", view);
         shader.SetUniformMatrix("projection", projection);
 
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        if(mesh.IsIndiciesDefiened())
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        else
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);
