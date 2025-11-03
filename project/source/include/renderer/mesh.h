@@ -21,6 +21,9 @@ namespace Renderer{
 
             ~Mesh();
 
+            int GetVertCount() const;
+            int GetIndiciesCount() const;
+
             void Use();
             void Delete();
 
@@ -30,6 +33,9 @@ namespace Renderer{
            VertexArrayObject VAO; 
            VertexBufferObject VBO;
            ElementBufferObject EBO;
+
+           int vertCount = 0;
+           int indiciesCount = 0;
 
            bool deleted = false;
            bool indicesDefined = false;

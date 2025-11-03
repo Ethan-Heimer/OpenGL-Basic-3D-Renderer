@@ -7,7 +7,8 @@
 namespace Renderer{
     class Object{
         public:
-            Object(Renderer::Transform* transform, Renderer::Mesh* mesh, Renderer::Material* material);
+            Object(Renderer::Mesh* mesh, Renderer::Material* material);
+            ~Object();
 
             Renderer::Transform* GetTransform() const;
             Renderer::Mesh* GetMesh() const;

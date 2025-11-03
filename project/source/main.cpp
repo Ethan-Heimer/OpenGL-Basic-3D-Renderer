@@ -1,10 +1,9 @@
 #include "glad/glad.h"
-#include "glm/ext/quaternion_transform.hpp"
-#include "glm/fwd.hpp"
-#include "glm/trigonometric.hpp"
 #include "renderer/material.h"
 #include "renderer/mesh.h"
+#include "renderer/mesh_constructor.h"
 #include "renderer/object.h"
+#include "renderer/renderer.h"
 #include "renderer/shader.h"
 #include "renderer/texture.h"
 #include "renderer/transform.h"
@@ -12,95 +11,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
-
-//mesh Data
-float vertices[] = {
--0.5f, -0.5f, -0.5f,
-0.5f, -0.5f, -0.5f,
-0.5f, 0.5f, -0.5f,
-0.5f, 0.5f, -0.5f,
--0.5f, 0.5f, -0.5f,
--0.5f, -0.5f, -0.5f,
-
--0.5f, -0.5f, 0.5f,
-0.5f, -0.5f, 0.5f,
-0.5f, 0.5f, 0.5f,
-0.5f, 0.5f, 0.5f,
--0.5f, 0.5f, 0.5f,
--0.5f, -0.5f, 0.5f,
-
--0.5f, 0.5f, 0.5f,
--0.5f, 0.5f, -0.5f,
--0.5f, -0.5f, -0.5f,
--0.5f, -0.5f, -0.5f,
--0.5f, -0.5f, 0.5f,
--0.5f, 0.5f, 0.5f,
-
-0.5f, 0.5f, 0.5f,
-0.5f, 0.5f, -0.5f,
-0.5f, -0.5f, -0.5f,
-0.5f, -0.5f, -0.5f,
-0.5f, -0.5f, 0.5f,
-0.5f, 0.5f, 0.5f,
-
--0.5f, -0.5f, -0.5f,
-0.5f, -0.5f, -0.5f,
-0.5f, -0.5f, 0.5f,
-0.5f, -0.5f, 0.5f,
--0.5f, -0.5f, 0.5f,
--0.5f, -0.5f, -0.5f,
-
--0.5f, 0.5f, -0.5f,
-0.5f, 0.5f, -0.5f,
-0.5f, 0.5f, 0.5f,
-0.5f, 0.5f, 0.5f,
--0.5f, 0.5f, 0.5f,
--0.5f, 0.5f, -0.5f
-};
-
-float uv[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-    
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-};
 
 void processInput(GLFWwindow *window)
 {
@@ -147,20 +57,17 @@ int main(){
 
     //when errors here - throws shader errors : does not terminate
     Renderer::Shader shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
-    Renderer::Mesh mesh{vertices, sizeof(vertices), uv, sizeof(uv)};
+    Renderer::Mesh* mesh = Renderer::MeshConstructor::Cube();
     Renderer::Texture texture{"./assets/dog.jpeg"};
 
     Renderer::Material material{&texture, &shader};
-    Renderer::Transform transform{};
 
-    Renderer::Object object{&transform, &mesh, &material};
+    Renderer::Object object{mesh, &material};
+    Renderer::Object object2{mesh, &material};
+    Renderer::Object object3{mesh, &material};
     
-    //camera
-    glm::mat4 view = glm::mat4{1.f};
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-    glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
+    object2.GetTransform()->SetPosition(-5.0f, 0.3f, -5.0f);
+    object3.GetTransform()->SetPosition(5.0f, 0.3f, -7.0f);
 
     while(!glfwWindowShouldClose(window))
     {
@@ -170,28 +77,21 @@ int main(){
         processInput(window);
 
         //rendering commands
-        mesh.Use();
-        material.Use();
+        object.GetTransform()->SetRotation(0.0f, 0.1f, 0.1f);
 
-        object.GetTransform()->SetRotation(0.1f, 0.2f, 0.1f);
+        object2.GetTransform()->SetRotation(-2.0f, 0.3f, 0.1f);
+        object3.GetTransform()->SetRotation(-1.5f, 0.7f, 0.4f);
 
-        shader.SetUniformMatrix("transform", object.GetTransform()->GetTransformationMatrix());
-        shader.SetUniformMatrix("view", view);
-        shader.SetUniformMatrix("projection", projection);
-
-        if(mesh.IsIndiciesDefiened())
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-        else
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glBindVertexArray(0);
+        Renderer::Renderer::Draw(object);
+        Renderer::Renderer::Draw(object2);
+        Renderer::Renderer::Draw(object3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     shader.Delete();
-    mesh.Delete();
+    delete mesh;
     texture.Delete();
 
     glfwTerminate();

@@ -11,6 +11,7 @@ namespace Renderer{
             Material(Renderer::Texture* texture, Renderer::Shader* shader);
 
             void Use();
+            Renderer::Shader* GetShader() const;
 
         private:
             Renderer::Texture* texture;

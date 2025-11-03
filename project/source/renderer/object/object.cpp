@@ -1,9 +1,16 @@
 #include "renderer/object.h"
+#include "renderer/transform.h"
 
 using namespace Renderer;
 
-Object::Object(Transform* transform, Mesh* mesh, Material* material)
- : transform(transform), mesh(mesh), material(material){}
+Object::Object(Mesh* mesh, Material* material)
+ : mesh(mesh), material(material){
+    transform = new Transform{};
+}
+
+Object::~Object(){
+    delete transform;
+}
 
 Material* Object::GetMaterial() const {
     return material;

@@ -9,6 +9,9 @@ Mesh::Mesh
      unsigned int* indicies, size_t indicies_size,
      float* uv_cords, size_t uv_size){ 
 
+    vertCount = vert_size;
+    indiciesCount = indicies_size;
+
     //merge verticies and uv into single buffer
     std::vector<float> data{};
     MergeBufferData(verticies, vert_size, uv_cords, uv_size, &data);
@@ -21,6 +24,8 @@ Mesh::Mesh
 Mesh::Mesh(float* verticies, size_t vert_size,
            float* uv_cords, size_t uv_size){
     
+    vertCount = vert_size;
+
     std::vector<float> data{};
     MergeBufferData(verticies, vert_size, uv_cords, uv_size, &data);
     CreateBuffers(&data);
@@ -30,6 +35,13 @@ Mesh::Mesh(float* verticies, size_t vert_size,
 
 Mesh::~Mesh(){
     Delete();
+}
+
+int Mesh::GetVertCount() const{
+    return vertCount;
+}
+int Mesh::GetIndiciesCount() const{
+    return indiciesCount;
 }
 
 void Mesh::Delete(){

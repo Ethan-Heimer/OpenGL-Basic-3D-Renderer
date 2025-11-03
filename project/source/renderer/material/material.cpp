@@ -10,4 +10,8 @@ void Material::Use(){
     shader->Use();
 }
 
+Shader* Material::GetShader() const{
+    return shader;
+}
+
 
