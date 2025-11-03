@@ -54,8 +54,6 @@ int main(){
     //wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     
-
-    //when errors here - throws shader errors : does not terminate
     Renderer::Shader shader{"./shaders/standard_vertex.glsl", "./shaders/standard_fragment.glsl"};
     Renderer::Mesh* mesh = Renderer::MeshConstructor::Cube();
     Renderer::Texture texture{"./assets/dog.jpeg"};

@@ -14,7 +14,7 @@ void Renderer::Renderer::Draw(const Object& object){
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
 
         glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
+        projection = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
 
         mesh->Use();
         material->Use();
