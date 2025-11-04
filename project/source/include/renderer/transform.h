@@ -13,6 +13,8 @@ namespace Renderer{
 
         private:
             glm::mat4 transformMatrix{1.0f};
+            glm::mat4 rotationMatrix{1.0f};
+            glm::mat4 scaleMatrix{1.0f};
     };
 }
 

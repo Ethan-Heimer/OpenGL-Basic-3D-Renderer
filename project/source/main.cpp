@@ -7,16 +7,11 @@
 #include "renderer/shader.h"
 #include "renderer/texture.h"
 #include "renderer/transform.h"
+#include "utils/input.h"
 
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
-
-void processInput(GLFWwindow *window)
-{
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
 
 
 int main(){
@@ -42,6 +37,8 @@ int main(){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    Utils::Input::Init(window);
 
     glViewport(0, 0, mode->width, mode->height);
     glEnable(GL_BLEND);
@@ -72,8 +69,21 @@ int main(){
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        processInput(window);
+        if(Utils::Input::GetKey(GLFW_KEY_ESCAPE))
+            glfwSetWindowShouldClose(window, true);
 
+        //test movement input
+        if(Utils::Input::GetKey(GLFW_KEY_W))
+            object.GetTransform()->SetPosition(0, 0, -0.1f);
+
+        if(Utils::Input::GetKey(GLFW_KEY_S))
+            object.GetTransform()->SetPosition(0, 0, 0.1f);
+
+        if(Utils::Input::GetKey(GLFW_KEY_A))
+            object.GetTransform()->SetPosition(-0.1f, 0, 0);
+
+        if(Utils::Input::GetKey(GLFW_KEY_D))
+            object.GetTransform()->SetPosition(0.1f, 0, 0);
         //rendering commands
         object.GetTransform()->SetRotation(0.0f, 0.1f, 0.1f);
 
