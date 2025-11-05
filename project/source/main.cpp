@@ -1,4 +1,7 @@
 #include "glad/glad.h"
+#include "glm/ext/vector_float3.hpp"
+#include "glm/trigonometric.hpp"
+#include "renderer/camera.h"
 #include "renderer/material.h"
 #include "renderer/mesh.h"
 #include "renderer/mesh_constructor.h"
@@ -10,6 +13,7 @@
 #include "utils/input.h"
 
 #include <GLFW/glfw3.h>
+#include <cmath>
 #include <iostream>
 #include <string>
 
@@ -41,8 +45,13 @@ int main(){
     Utils::Input::Init(window);
 
     glViewport(0, 0, mode->width, mode->height);
+
+    //settings
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
+
+    //capture and center curser
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //this enables alpha values in png inages and color data
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -60,6 +69,10 @@ int main(){
     Renderer::Object object{mesh, &material};
     Renderer::Object object2{mesh, &material};
     Renderer::Object object3{mesh, &material};
+
+    Renderer::Camera camera{};
+    
+    camera.SetPosition(0, 0, 5);
     
     object2.GetTransform()->SetPosition(-5.0f, 0.3f, -5.0f);
     object3.GetTransform()->SetPosition(5.0f, 0.3f, -7.0f);
@@ -72,32 +85,38 @@ int main(){
         if(Utils::Input::GetKey(GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, true);
 
-        //test movement input
-        if(Utils::Input::GetKey(GLFW_KEY_W))
-            object.GetTransform()->SetPosition(0, 0, -0.1f);
-
-        if(Utils::Input::GetKey(GLFW_KEY_S))
-            object.GetTransform()->SetPosition(0, 0, 0.1f);
-
-        if(Utils::Input::GetKey(GLFW_KEY_A))
-            object.GetTransform()->SetPosition(-0.1f, 0, 0);
-
-        if(Utils::Input::GetKey(GLFW_KEY_D))
-            object.GetTransform()->SetPosition(0.1f, 0, 0);
         //rendering commands
         object.GetTransform()->SetRotation(0.0f, 0.1f, 0.1f);
 
         object2.GetTransform()->SetRotation(-2.0f, 0.3f, 0.1f);
         object3.GetTransform()->SetRotation(-1.5f, 0.7f, 0.4f);
 
-        Renderer::Renderer::Draw(object);
-        Renderer::Renderer::Draw(object2);
-        Renderer::Renderer::Draw(object3);
+        Renderer::Renderer::Draw(object, camera);
+        Renderer::Renderer::Draw(object2, camera);
+        Renderer::Renderer::Draw(object3, camera);
+
+        //test movement input
+        if(Utils::Input::GetKey(GLFW_KEY_W))
+            camera.Move(.1f);
+        if(Utils::Input::GetKey(GLFW_KEY_S))
+            camera.Move(-.1f);
+        if(Utils::Input::GetKey(GLFW_KEY_A))
+            camera.Strafe(-.1f);
+        if(Utils::Input::GetKey(GLFW_KEY_D))
+            camera.Strafe(.1f);
+     
+        if(Utils::Input::GetKey(GLFW_KEY_Q))
+            camera.IncrementYaw(-1);
+
+        if(Utils::Input::GetKey(GLFW_KEY_E))
+            camera.IncrementYaw(1);
+
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    //all data using the GPU must be deleted before glfwTerminate is called
     shader.Delete();
     delete mesh;
     texture.Delete();

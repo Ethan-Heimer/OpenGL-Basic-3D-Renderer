@@ -10,14 +10,6 @@ namespace Utils{
 
             static bool GetKey(unsigned int keyCode);
 
-            /*
-            void processInput(GLFWwindow *window)
-            {
-                if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-                    glfwSetWindowShouldClose(window, true);
-            }
-            */
-
         private:
             static GLFWwindow* mainWindow;
     };

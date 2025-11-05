@@ -1,17 +1,14 @@
+#include "renderer/camera.h"
 #include "renderer/object.h"
 #include "renderer/renderer.h"
 
 #include "glad/glad.h"
 
 
-void Renderer::Renderer::Draw(const Object& object){ 
+void Renderer::Renderer::Draw(const Object& object, const Camera& camera){ 
         Mesh* mesh = object.GetMesh();
         Material* material = object.GetMaterial();
         Shader* shader = material->GetShader();
-
-        //projection
-        glm::mat4 view = glm::mat4{1.f};
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
 
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f); 
@@ -20,7 +17,7 @@ void Renderer::Renderer::Draw(const Object& object){
         material->Use();
 
         shader->SetUniformMatrix("transform", object.GetTransform()->GetTransformationMatrix());
-        shader->SetUniformMatrix("view", view);
+        shader->SetUniformMatrix("view", camera.GetViewMatrix());
         shader->SetUniformMatrix("projection", projection);
 
         int elementCount = 0;
