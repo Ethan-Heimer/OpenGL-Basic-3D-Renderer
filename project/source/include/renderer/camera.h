@@ -19,7 +19,7 @@ namespace Renderer{
             void SetYaw(float theta);
             void IncrementYaw(float theta);
 
-            glm::mat4 GetViewMatrix() const;
+            glm::mat4 GetViewMatrix();
 
         private:
             glm::vec3 position{0.0f, 0.0f, 3.0f};

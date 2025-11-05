@@ -6,7 +6,7 @@
 namespace Renderer{
     class Renderer{
         public:
-            static void Draw(const Object& object, const Camera& camera);
+            static void Draw(const Object& object, Camera& camera);
     };
 }
 

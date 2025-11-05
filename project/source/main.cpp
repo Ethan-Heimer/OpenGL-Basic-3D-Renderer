@@ -85,15 +85,21 @@ int main(){
         if(Utils::Input::GetKey(GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, true);
 
+        Utils::Input::PollMouseDelta();
+
         //rendering commands
         object.GetTransform()->SetRotation(0.0f, 0.1f, 0.1f);
 
         object2.GetTransform()->SetRotation(-2.0f, 0.3f, 0.1f);
         object3.GetTransform()->SetRotation(-1.5f, 0.7f, 0.4f);
 
-        Renderer::Renderer::Draw(object, camera);
-        Renderer::Renderer::Draw(object2, camera);
-        Renderer::Renderer::Draw(object3, camera);
+        float mouseDeltaX, mouseDeltaY;
+        Utils::Input::MouseDelta(&mouseDeltaX, &mouseDeltaY);
+
+        std::cout << mouseDeltaX << std::endl;
+
+        camera.IncrementYaw(mouseDeltaX * -.1f);
+        camera.IncrementPitch(mouseDeltaY * .1f);
 
         //test movement input
         if(Utils::Input::GetKey(GLFW_KEY_W))
@@ -104,13 +110,10 @@ int main(){
             camera.Strafe(-.1f);
         if(Utils::Input::GetKey(GLFW_KEY_D))
             camera.Strafe(.1f);
-     
-        if(Utils::Input::GetKey(GLFW_KEY_Q))
-            camera.IncrementYaw(-1);
 
-        if(Utils::Input::GetKey(GLFW_KEY_E))
-            camera.IncrementYaw(1);
-
+        Renderer::Renderer::Draw(object, camera);
+        Renderer::Renderer::Draw(object2, camera);
+        Renderer::Renderer::Draw(object3, camera);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

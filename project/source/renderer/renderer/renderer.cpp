@@ -5,7 +5,7 @@
 #include "glad/glad.h"
 
 
-void Renderer::Renderer::Draw(const Object& object, const Camera& camera){ 
+void Renderer::Renderer::Draw(const Object& object, Camera& camera){ 
         Mesh* mesh = object.GetMesh();
         Material* material = object.GetMaterial();
         Shader* shader = material->GetShader();

@@ -16,22 +16,16 @@ void Camera::SetPosition(float x, float y, float z){
     position.x = x;
     position.y = y;
     position.z = z;
-
-    UpdateViewMatrix();
 }
 
 void Camera::Translate(float x, float y, float z){
     position.x += x;
     position.y += y;
     position.z += z;
-
-    UpdateViewMatrix();
 }
 
 void Camera::Move(float speed){
     position += front * speed;
-
-    UpdateViewMatrix();
 }
 
 void Camera::Strafe(float speed){
@@ -40,35 +34,36 @@ void Camera::Strafe(float speed){
     glm::vec3 right = glm::cross(front, up);
 
     position += right * speed;
-
-    UpdateViewMatrix();
 }
 
 void Camera::SetPitch(float theta){
     pitch = theta;
 
-    UpdateViewMatrix();
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
 }
 
 void Camera::IncrementPitch(float theta){
     pitch += theta;
 
-    UpdateViewMatrix();
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
 }
 
 void Camera::SetYaw(float theta){
     yaw = theta;
-
-    UpdateViewMatrix();
 }
 
 void Camera::IncrementYaw(float theta){
     yaw += theta;
-
-    UpdateViewMatrix();
 }
 
-glm::mat4 Camera::GetViewMatrix() const{
+glm::mat4 Camera::GetViewMatrix(){
+    UpdateViewMatrix();
     return view;
 }
 
